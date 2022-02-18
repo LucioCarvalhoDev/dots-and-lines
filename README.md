@@ -4,7 +4,7 @@ Package for creation of a simple and elegant customizable procedural animation l
 
 ## Installation
 
-`npm install 'dots-and-points'`
+For now only by download/clone.
 
 ## Usage
 
