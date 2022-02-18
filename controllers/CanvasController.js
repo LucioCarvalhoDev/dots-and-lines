@@ -2,7 +2,7 @@
  * @module module:CanvasController
  */
 
-export const GAME_RULES = {
+const defaultRules = {
     dotDistanceToDie: 200,
     dotPopulation: localStorage.getItem('dotPopulation') || 35,
     lineMaxLenght: localStorage.getItem('lineMaxLenght') || 255
@@ -17,7 +17,11 @@ export default class CanvasController {
      * @constructor
      * @param {HTMLElement} target Elemento canvas
      */
-    constructor(target) {
+    constructor(target, rules={}) {
+
+        this._RULES = defaultRules;
+        this.setRules(rules)
+
         this.canvas = {
             element: target,
             width: target.clientWidth,
@@ -27,6 +31,22 @@ export default class CanvasController {
         this.drafter = new Drafter(this.canvas.element);
 
         this.dots = [];
+
+        this.init()
+    }
+
+    init() {
+        this.populate(this._RULES.dotPopulation)
+    }
+
+    /**
+     * Atualiza as regras da animação
+     * @param {*} newRules 
+     */
+    setRules(newRules) {
+        for (const rule in newRules) {
+            this._RULES[rule] = newRules[rule];
+        }
     }
 
     /**
@@ -52,8 +72,8 @@ export default class CanvasController {
      * @param {Number} _hp 
      */
     _createDot(_x = undefined, _y = undefined, _dir = undefined, _speed = undefined, _state = undefined, _hp = undefined) {
-        const x = _x || _math.numberBetween(-GAME_RULES.dotDistanceToDie, this.canvas.width + GAME_RULES.dotDistanceToDie);
-        const y = _y || _math.numberBetween(-GAME_RULES.dotDistanceToDie, this.canvas.height + GAME_RULES.dotDistanceToDie);
+        const x = _x || _math.numberBetween(-this._RULES.dotDistanceToDie, this.canvas.width + this._RULES.dotDistanceToDie);
+        const y = _y || _math.numberBetween(-this._RULES.dotDistanceToDie, this.canvas.height + this._RULES.dotDistanceToDie);
         const dir = _dir != undefined ? _dir : Math.round(Math.random() * 360);
         const speed = _speed || Math.random() * 2 + 0.1;
         const state = _state || 'idle';
@@ -90,10 +110,20 @@ export default class CanvasController {
      */
     updateDots() {
         this.dots.forEach((dot, idx) => {
-            if (!dot.update(this.canvas.width, this.canvas.height)) {
-                delete this.dots[idx];
-            }
+            dot.update(this.canvas.width, this.canvas.height);
+
+            const isInsideWindow = this._isPointInsideRect(
+                dot, 
+                [-this._RULES.dotDistanceToDie, -this._RULES.dotDistanceToDie],
+                [this.canvas.width + this._RULES.dotDistanceToDie, this.canvas.height + this._RULES.dotDistanceToDie])
+
+            if (!isInsideWindow)
+                delete this.dots[idx]
+
+            if (dot.hp === 0 && dot.state === 'dying')
+                dot.die();
         });
+
         this.dots = this.dots.filter(d => d);
         return this.dots.length;
     }
@@ -137,7 +167,7 @@ export default class CanvasController {
      */
     renderLines() {
         const dotList = [].concat(this.dots);
-        const maxDistance = 255 * GAME_RULES.lineMaxLenght / 100;
+        const maxDistance = 255 * this._RULES.lineMaxLenght / 100;
         const screenWalls = [
             [{ x: 0, y: 0 }, { x: this.canvas.width, y: 0 }],
             [{ x: 0, y: this.canvas.height }, { x: this.canvas.width, y: this.canvas.height }],

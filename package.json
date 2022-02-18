@@ -1,0 +1,28 @@
+{
+  "name": "dots-and-lines",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "creation of basic procedural animation in canvas element",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LucioCarvalhoDev/dots-and-lines.git"
+  },
+  "keywords": [
+    "procedural-animation",
+    "canvas"
+  ],
+  "author": {
+    "name": "Lúcio Carvalho Almeida",
+    "email": "luciocarvalhodev@gmail.com",
+    "url": "https://github.com/LucioCarvalhoDev"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LucioCarvalhoDev/dots-and-lines/issues"
+  },
+  "homepage": "https://github.com/LucioCarvalhoDev/dots-and-lines#readme"
+}

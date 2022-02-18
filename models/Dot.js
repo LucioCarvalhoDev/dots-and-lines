@@ -2,7 +2,6 @@
  * @module module:Dot
  */
 
-import { GAME_RULES } from "../controllers/CanvasController.js";
 
 export default class Dot {
     /**
@@ -42,18 +41,11 @@ export default class Dot {
             }
         } else if (this.state === 'dying') {
             this.hp -= this.rate;
-            if (this.hp <= 0) {
+            if (this.hp <= 0)
                 this.hp = 0;
-                return 0;
-            }
         }
 
-        if ((this.x < -GAME_RULES.dotDistanceToDie || this.x > canvasWidth + GAME_RULES.dotDistanceToDie) ||
-            (this.y < -GAME_RULES.dotDistanceToDie || this.y > canvasHeight + GAME_RULES.dotDistanceToDie)) {
-            return 0;
-        } else {
-            return 1;
-        }
+        return [this.x, this.y]
     }
 
     _distanceTo(otherDot) {
