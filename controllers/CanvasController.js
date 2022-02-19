@@ -4,8 +4,8 @@
 
 const defaultRules = {
     dotDistanceToDie: 200,
-    dotPopulation: localStorage.getItem('dotPopulation') || 35,
-    lineMaxLenght: localStorage.getItem('lineMaxLenght') || 255
+    dotPopulation: 35,
+    lineMaxLenght: 255
 };
 
 import Dot from "../models/Dot.js";
