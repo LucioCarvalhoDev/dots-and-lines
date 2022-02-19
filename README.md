@@ -11,7 +11,7 @@ For now only by download/clone.
 ```
 /* Basic Functions */
 
-import CanvasController from 'dots-and-points.js';
+import CanvasController from 'dots-and-points';
 
 const canvas = new CanvasController(document.getElementById('myCanvas'));
 
