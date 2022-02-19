@@ -23,7 +23,7 @@ canvas.renderLines(); // draw lines that connect nearby points
 // diretion and current position
 canvas.update()
 
-/* Animação */
+/* Animate */
 
 setInterval(function() {
     const population = canvas.step() // update + render
@@ -37,3 +37,7 @@ setInterval(function() {
 ```
 
 > Dot population will decay naturally, so it's necessary check the quantity and replace them
+
+## Documentation
+
+* [Docs](https://luciocarvalhodev.github.io/dots-and-lines)

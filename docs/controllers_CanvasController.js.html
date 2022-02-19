@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controllers/CanvasController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: controllers/CanvasController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @module module:CanvasController
  */
 
@@ -19,8 +47,14 @@ export default class CanvasController {
      */
     constructor(target, rules={}) {
 
-        this._RULES = defaultRules;
+        /**
+         * Defines the behavior of the animation
+         * @type {{dotDistanceToDie: number, dotPopulation: number, lineMaxLenght: number}}
+         * @private
+         */
+        this._rules = defaultRules;
         this.setRules(rules)
+
 
         this.canvas = {
             element: target,
@@ -28,15 +62,24 @@ export default class CanvasController {
             height: target.clientHeight
         };
 
+        /**
+         * Responsible for drawing on canvas
+         * @type {Drafter}
+         * @private
+         */
         this.drafter = new Drafter(this.canvas.element);
-
+        
+        /**
+         * List of dots
+         * @type {Dot[]}
+         */
         this.dots = [];
 
         this.init()
     }
 
     init() {
-        this.populate(this._RULES.dotPopulation)
+        this.populate(this._rules.dotPopulation)
     }
 
     /**
@@ -45,7 +88,7 @@ export default class CanvasController {
      */
     setRules(newRules) {
         for (const rule in newRules) {
-            this._RULES[rule] = newRules[rule];
+            this._rules[rule] = newRules[rule];
         }
     }
 
@@ -72,8 +115,8 @@ export default class CanvasController {
      * @param {Number} _hp 
      */
     _createDot(_x = undefined, _y = undefined, _dir = undefined, _speed = undefined, _state = undefined, _hp = undefined) {
-        const x = _x || _math.numberBetween(-this._RULES.dotDistanceToDie, this.canvas.width + this._RULES.dotDistanceToDie);
-        const y = _y || _math.numberBetween(-this._RULES.dotDistanceToDie, this.canvas.height + this._RULES.dotDistanceToDie);
+        const x = _x || _math.numberBetween(-this._rules.dotDistanceToDie, this.canvas.width + this._rules.dotDistanceToDie);
+        const y = _y || _math.numberBetween(-this._rules.dotDistanceToDie, this.canvas.height + this._rules.dotDistanceToDie);
         const dir = _dir != undefined ? _dir : Math.round(Math.random() * 360);
         const speed = _speed || Math.random() * 2 + 0.1;
         const state = _state || 'idle';
@@ -89,7 +132,7 @@ export default class CanvasController {
      * @param {Number} n Quantidade de Dots que devem ser criados
      */
     rePopulate(n = 1) {
-        for (let i = 1; i <= n; i++) {
+        for (let i = 1; i &lt;= n; i++) {
             this._createDot(undefined, undefined, undefined, undefined, 'born');
         }
     }
@@ -99,7 +142,7 @@ export default class CanvasController {
      * @param {Number} n 
      */
     populate(n = 1) {
-        for (let i = 1; i <= n; i++) {
+        for (let i = 1; i &lt;= n; i++) {
             this._createDot();
         }
     }
@@ -114,13 +157,13 @@ export default class CanvasController {
 
             const isInsideWindow = this._isPointInsideRect(
                 dot, 
-                [-this._RULES.dotDistanceToDie, -this._RULES.dotDistanceToDie],
-                [this.canvas.width + this._RULES.dotDistanceToDie, this.canvas.height + this._RULES.dotDistanceToDie])
+                [-this._rules.dotDistanceToDie, -this._rules.dotDistanceToDie],
+                [this.canvas.width + this._rules.dotDistanceToDie, this.canvas.height + this._rules.dotDistanceToDie])
 
             if (!isInsideWindow)
                 delete this.dots[idx]
 
-            if (dot.hp === 0 && dot.state === 'dying')
+            if (dot.hp === 0 &amp;&amp; dot.state === 'dying')
                 dot.die();
         });
 
@@ -133,7 +176,7 @@ export default class CanvasController {
      * @param {Number} n Quantidade de dots para matar
      */
     kill(n) {
-        for (let i = 0; i < n; i++) {
+        for (let i = 0; i &lt; n; i++) {
             this.dots[i].rate = _math.numberBetween(0.01, 2);
             this.dots[i].die();
         }
@@ -147,8 +190,8 @@ export default class CanvasController {
         this.drafter.brush.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         const visibleDots = this.dots.filter(dot =>
-            dot.x >= - 5 && dot.x <= this.canvas.width + 5 &&
-            dot.y >= - 5 && dot.y <= this.canvas.height + 5
+            dot.x >= - 5 &amp;&amp; dot.x &lt;= this.canvas.width + 5 &amp;&amp;
+            dot.y >= - 5 &amp;&amp; dot.y &lt;= this.canvas.height + 5
         );
 
         visibleDots.forEach(dot => {
@@ -167,7 +210,7 @@ export default class CanvasController {
      */
     renderLines() {
         const dotList = [].concat(this.dots);
-        const maxDistance = 255 * this._RULES.lineMaxLenght / 100;
+        const maxDistance = 255 * this._rules.lineMaxLenght / 100;
         const screenWalls = [
             [{ x: 0, y: 0 }, { x: this.canvas.width, y: 0 }],
             [{ x: 0, y: this.canvas.height }, { x: this.canvas.width, y: this.canvas.height }],
@@ -176,15 +219,15 @@ export default class CanvasController {
         ];
         
         // evita linhas repetidas
-        for (let i = 0; i < this.dots.length; i++) {
+        for (let i = 0; i &lt; this.dots.length; i++) {
             const dotStart = dotList.splice(0, 1)[0];
             
-            for (let j = i + 1; j < this.dots.length; j++) {
+            for (let j = i + 1; j &lt; this.dots.length; j++) {
                 const dotEnd = this.dots[j];
                 
                 const distance = dotStart._distanceTo(dotEnd);
                 
-                if (distance < maxDistance) {
+                if (distance &lt; maxDistance) {
                     const lineWillBeVisible = screenWalls.map(([w1, w2]) => {
 
                         if ((this._isPointInsideRect(dotStart, [0, 0], [this.canvas.width, this.canvas.height])) ||
@@ -239,12 +282,34 @@ export default class CanvasController {
         } else {
             lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
             gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
-            return ((0 < lambda && lambda < 1) && (0 < gamma && gamma < 1));
+            return ((0 &lt; lambda &amp;&amp; lambda &lt; 1) &amp;&amp; (0 &lt; gamma &amp;&amp; gamma &lt; 1));
         }
     }
 
     _isPointInsideRect({ x, y }, [x1, y1], [x2, y2]) {
-        return (x > x1 && x < x2) && (y > y1 && y < y2);
+        return (x > x1 &amp;&amp; x &lt; x2) &amp;&amp; (y > y1 &amp;&amp; y &lt; y2);
     }
 
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-CanvasController.html">CanvasController</a></li><li><a href="module-Dot.html">Dot</a></li><li><a href="module-Drafter.html">Drafter</a></li></ul><h3>Classes</h3><ul><li><a href="module-CanvasController.html">CanvasController</a></li><li><a href="module-Dot.html">Dot</a></li><li><a href="module-Drafter.html">Drafter</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sat Feb 19 2022 09:36:42 GMT-0300 (Horário Padrão de Brasília)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
