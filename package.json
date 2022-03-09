@@ -1,5 +1,5 @@
 {
-  "name": "dots-and-lines",
+  "name": "dots-galaxy",
   "type": "module",
   "version": "1.0.0",
   "description": "creation of basic procedural animation in canvas element",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LucioCarvalhoDev/dots-and-lines.git"
+    "url": "git+https://github.com/LucioCarvalhoDev/dots-galaxy.git"
   },
   "keywords": [
     "procedural-animation",
@@ -22,7 +22,7 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LucioCarvalhoDev/dots-and-lines/issues"
+    "url": "https://github.com/LucioCarvalhoDev/dots-galaxy/issues"
   },
-  "homepage": "https://github.com/LucioCarvalhoDev/dots-and-lines#readme"
+  "homepage": "https://github.com/LucioCarvalhoDev/dots-galaxy#readme"
 }
