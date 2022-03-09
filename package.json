@@ -1,7 +1,7 @@
 {
   "name": "dots-galaxy",
   "type": "module",
-  "version": "0.1a",
+  "version": "0.1.1",
   "description": "creation of basic procedural animation in canvas element",
   "main": "index.js",
   "scripts": {
