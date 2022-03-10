@@ -3,10 +3,18 @@
  */
 
 const defaultRules = {
-    dotDistanceToDie: 200,
-    dotPopulation: 35,
-    lineMaxLenght: 255
-};
+    screenMargin: 5,
+    dotBornMode: 'randomChild',
+    dotDirectionRange: [0, 359],
+    dotColor: "#00ff00",
+    dotFade: true,
+    dotPopulation: 100,
+    dotSpeed: 1,
+    dotSpeedVariation: 0.5,
+    lineColor: "#00ff00",
+    lineFade: true,
+    lineMaxLenght: 0,
+}
 
 import Dot from "../models/Dot.js";
 import Drafter from "../views/Drafter.js";
@@ -20,13 +28,12 @@ export default class CanvasController {
     constructor(target, rules={}) {
 
         /**
-         * Defines the behavior of the animation
-         * @type {{dotDistanceToDie: number, dotPopulation: number, lineMaxLenght: number}}
+         * Defines animation behavior
+         * @type {{screenMargin: number, dotPopulation: number, lineMaxLenght: number}}
          * @private
          */
         this._rules = defaultRules;
         this.setRules(rules)
-
 
         this.canvas = {
             element: target,
@@ -87,10 +94,10 @@ export default class CanvasController {
      * @param {Number} _hp 
      */
     _createDot(_x = undefined, _y = undefined, _dir = undefined, _speed = undefined, _state = undefined, _hp = undefined) {
-        const x = _x || _math.numberBetween(-this._rules.dotDistanceToDie, this.canvas.width + this._rules.dotDistanceToDie);
-        const y = _y || _math.numberBetween(-this._rules.dotDistanceToDie, this.canvas.height + this._rules.dotDistanceToDie);
-        const dir = _dir != undefined ? _dir : Math.round(Math.random() * 360);
-        const speed = _speed || Math.random() * 2 + 0.1;
+        const x = _x || _math.numberBetween(-this._rules.screenMargin, this.canvas.width + this._rules.screenMargin);
+        const y = _y || _math.numberBetween(-this._rules.screenMargin, this.canvas.height + this._rules.screenMargin);
+        const dir = _dir != undefined ? _dir : _math.numberBetween(...this._rules.dotDirectionRange);
+        const speed = _speed || this._rules.dotSpeed + _math.numberBetween(this._rules.dotSpeedVariation, -this._rules.dotSpeedVariation);
         const state = _state || 'idle';
         const hp = state === 'born' ? 0 : 100;
 
@@ -105,7 +112,27 @@ export default class CanvasController {
      */
     rePopulate(n = 1) {
         for (let i = 1; i <= n; i++) {
-            this._createDot(undefined, undefined, undefined, undefined, 'born');
+            
+            switch(this._rules.dotBornMode) {
+                case 'anywere':
+                    this._createDot(undefined, undefined, undefined, undefined, 'born');
+                    break;
+                case 'child':
+                    const parent = this.dots[0];
+                    this._createDot(parent.x, parent.y, undefined, undefined, 'born');
+                    break;
+                case 'randomChild': 
+                    const randomParent = this.dots[Math.floor(Math.random()*this.dots.length)];
+                    this._createDot(randomParent.x, randomParent.y, undefined, undefined, 'born');
+                    break;
+                case 'top':
+                    this._createDot(_math.numberBetween(-this._rules.screenMargin,this.canvas.width+this._rules.screenMargin), 0 - this._rules.screenMargin, undefined, undefined, 'born');
+                    break;
+                default:
+                    this._createDot(undefined, undefined, undefined, undefined, 'born');
+
+
+            }
         }
     }
 
@@ -129,8 +156,8 @@ export default class CanvasController {
 
             const isInsideWindow = this._isPointInsideRect(
                 dot, 
-                [-this._rules.dotDistanceToDie, -this._rules.dotDistanceToDie],
-                [this.canvas.width + this._rules.dotDistanceToDie, this.canvas.height + this._rules.dotDistanceToDie])
+                [-this._rules.screenMargin, -this._rules.screenMargin],
+                [this.canvas.width + this._rules.screenMargin, this.canvas.height + this._rules.screenMargin])
 
             if (!isInsideWindow)
                 delete this.dots[idx]
@@ -167,10 +194,14 @@ export default class CanvasController {
         );
 
         visibleDots.forEach(dot => {
-            const opacity = Math.round(255 * dot.hp / 100)
-                .toString(16).padStart(2, '0');
+            let opacity = 'ff';
 
-            const color = '#ffffff' + opacity;
+            if (this._rules.dotFade) {
+                opacity = Math.round(255 * dot.hp / 100)
+                    .toString(16).padStart(2, '0');
+            }
+
+            const color = this._rules.dotColor + opacity;
             this.drafter.dot(dot.x, dot.y, color);
         });
 
@@ -211,12 +242,15 @@ export default class CanvasController {
 
 
                     if (lineWillBeVisible) {
-                        const baseLineOpacity = Math.abs((distance / maxDistance) - 1) * 255;
-                        const medDotsOpacity = ((dotStart.hp + dotEnd.hp) / 2) / 100;
-                        const opacity = Number(Math.round(baseLineOpacity * medDotsOpacity))
-                            .toString(16).padStart(2, '0');
+                        let opacity = 'ff';
+                        if (this._rules.lineFade) {
+                            const baseLineOpacity = Math.abs((distance / maxDistance) - 1) * 255;
+                            const medDotsOpacity = ((dotStart.hp + dotEnd.hp) / 2) / 100;
+                            opacity = Number(Math.round(baseLineOpacity * medDotsOpacity))
+                                .toString(16).padStart(2, '0');
+                        }
 
-                        const color = "#ffffff" + opacity;
+                        const color = this._rules.lineColor + opacity;
 
                         this.drafter.line(dotStart, dotEnd, color);
                     }

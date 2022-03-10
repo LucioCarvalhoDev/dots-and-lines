@@ -27,9 +27,9 @@ export default class Dot {
      * Atualiza posição e estado proprios
      * @param {Number} canvasWidth 
      * @param {Number} canvasHeight 
-     * @returns {0|1} Se o dot continua vivo
+     * @returns {[Number, Number]} new coordinates
      */
-    update(canvasWidth, canvasHeight) {
+    update() {
         this.move();
 
         if (this.state === 'born') {
@@ -56,7 +56,7 @@ export default class Dot {
     }
 
     _degToRad(deg) {
-        return deg * (Math.PI / 180);
+        return -deg * (Math.PI / 180);
     }
 
     /**

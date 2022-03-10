@@ -16,10 +16,8 @@ export const _math = {
      * @param  {[Number, Number]} range 
      * @returns {Number}
      */
-    numberBetween: (...range) => {
-        const max = Math.max(...range);
-        const min = Math.min(...range);
-        // console.log(range, max, min);
+    numberBetween: (min, max) => {
+        // console.log(range, range[0], min);
         return Math.random() * (max - min) + min;
     },
     distanceBetween: (ax, ay, bx, by) => {

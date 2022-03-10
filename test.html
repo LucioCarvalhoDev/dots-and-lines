@@ -11,16 +11,22 @@
     <canvas id="myCanvas" width="500" height="500" style="background: black;"></canvas>
 
     <script type="module">
-        import CanvasController from './controllers/CanvasController.js';
+        import CanvasController from './index.js';
 
-        const canvas = new CanvasController(document.getElementById('myCanvas'), {
-            dotPopulation: 1000,
-            lineMaxLenght: 0
-        });
+        const rules = {
+            
+    dotPopulation: 100,
+        }
+
+        const canvas = new CanvasController(document.getElementById('myCanvas'), rules);
         
 
         setInterval(() => {
             const population = canvas.step();
+
+            if (population < rules.dotPopulation) {
+                canvas.rePopulate(rules.dotPopulation - population);
+            }
         }, 30)
 
 
