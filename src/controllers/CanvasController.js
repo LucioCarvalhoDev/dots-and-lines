@@ -2,19 +2,6 @@
  * @module module:CanvasController
  */
 
-const defaultRules = {
-    screenMargin: 5,
-    dotBornMode: 'randomChild',
-    dotDirectionRange: [0, 359],
-    dotColor: "#00ff00",
-    dotFade: true,
-    dotPopulation: 100,
-    dotSpeed: 1,
-    dotSpeedVariation: 0.5,
-    lineColor: "#00ff00",
-    lineFade: true,
-    lineMaxLenght: 0,
-}
 
 import Dot from "../models/Dot.js";
 import Drafter from "../views/Drafter.js";
@@ -25,15 +12,15 @@ export default class CanvasController {
      * @constructor
      * @param {HTMLElement} target Elemento canvas
      */
-    constructor(target, rules={}) {
+    constructor(target, rules = {}) {
 
         /**
          * Defines animation behavior
          * @type {{screenMargin: number, dotPopulation: number, lineMaxLenght: number}}
          * @private
          */
-        this._rules = defaultRules;
-        this.setRules(rules)
+        this._rules = CanvasController.defaultRules();
+        this.setRules(rules);
 
         this.canvas = {
             element: target,
@@ -47,18 +34,35 @@ export default class CanvasController {
          * @private
          */
         this.drafter = new Drafter(this.canvas.element);
-        
+
         /**
          * List of dots
          * @type {Dot[]}
          */
         this.dots = [];
 
-        this.init()
+        this.init();
+    }
+
+    static defaultRules() {
+        return {
+            screenMargin: 5,
+            dotBornMode: 'randomChild',
+            dotDirectionRange: [0, 359],
+            dotColor: "#00ff00",
+            dotFade: true,
+            dotPopulation: 100,
+            dotSize: 2.5,
+            dotSpeed: 1,
+            dotSpeedVariation: 0.5,
+            lineColor: "#00ff00",
+            lineFade: true,
+            lineMaxLenght: 0,
+        };
     }
 
     init() {
-        this.populate(this._rules.dotPopulation)
+        this.populate(this._rules.dotPopulation);
     }
 
     /**
@@ -112,8 +116,8 @@ export default class CanvasController {
      */
     rePopulate(n = 1) {
         for (let i = 1; i <= n; i++) {
-            
-            switch(this._rules.dotBornMode) {
+
+            switch (this._rules.dotBornMode) {
                 case 'anywere':
                     this._createDot(undefined, undefined, undefined, undefined, 'born');
                     break;
@@ -121,12 +125,12 @@ export default class CanvasController {
                     const parent = this.dots[0];
                     this._createDot(parent.x, parent.y, undefined, undefined, 'born');
                     break;
-                case 'randomChild': 
-                    const randomParent = this.dots[Math.floor(Math.random()*this.dots.length)];
+                case 'randomChild':
+                    const randomParent = this.dots[Math.floor(Math.random() * this.dots.length)];
                     this._createDot(randomParent.x, randomParent.y, undefined, undefined, 'born');
                     break;
                 case 'top':
-                    this._createDot(_math.numberBetween(-this._rules.screenMargin,this.canvas.width+this._rules.screenMargin), 0 - this._rules.screenMargin, undefined, undefined, 'born');
+                    this._createDot(_math.numberBetween(-this._rules.screenMargin, this.canvas.width + this._rules.screenMargin), 0 - this._rules.screenMargin, undefined, undefined, 'born');
                     break;
                 default:
                     this._createDot(undefined, undefined, undefined, undefined, 'born');
@@ -155,12 +159,12 @@ export default class CanvasController {
             dot.update(this.canvas.width, this.canvas.height);
 
             const isInsideWindow = this._isPointInsideRect(
-                dot, 
+                dot,
                 [-this._rules.screenMargin, -this._rules.screenMargin],
-                [this.canvas.width + this._rules.screenMargin, this.canvas.height + this._rules.screenMargin])
+                [this.canvas.width + this._rules.screenMargin, this.canvas.height + this._rules.screenMargin]);
 
             if (!isInsideWindow)
-                delete this.dots[idx]
+                delete this.dots[idx];
 
             if (dot.hp === 0 && dot.state === 'dying')
                 dot.die();
@@ -202,7 +206,7 @@ export default class CanvasController {
             }
 
             const color = this._rules.dotColor + opacity;
-            this.drafter.dot(dot.x, dot.y, color);
+            this.drafter.dot(dot.x, dot.y, this._rules.dotSize, color);
         });
 
         return visibleDots.length;
@@ -220,16 +224,16 @@ export default class CanvasController {
             [{ x: 0, y: 0 }, { x: 0, y: this.canvas.height }],
             [{ x: this.canvas.width, y: 0 }, { x: this.canvas.width, y: this.canvas.height }],
         ];
-        
+
         // evita linhas repetidas
         for (let i = 0; i < this.dots.length; i++) {
             const dotStart = dotList.splice(0, 1)[0];
-            
+
             for (let j = i + 1; j < this.dots.length; j++) {
                 const dotEnd = this.dots[j];
-                
+
                 const distance = dotStart._distanceTo(dotEnd);
-                
+
                 if (distance < maxDistance) {
                     const lineWillBeVisible = screenWalls.map(([w1, w2]) => {
 

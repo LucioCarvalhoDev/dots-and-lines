@@ -21,10 +21,10 @@ export default class Drafter {
      * @param {Number} y
      * @param {String} color 
      */
-    dot(x, y, color = "#ffffff") {
+    dot(x, y, size, color = "#ffffff") {
         this.brush.beginPath();
 
-        this.brush.arc(x, y, 2.5, 0, Math.PI * 2);
+        this.brush.arc(x, y, size, 0, Math.PI * 2);
         this.brush.fillStyle = color;
         this.brush.fill();
 
