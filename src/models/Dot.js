@@ -27,7 +27,7 @@ export default class Dot {
      * Atualiza posição e estado proprios
      * @param {Number} canvasWidth 
      * @param {Number} canvasHeight 
-     * @returns {[Number, Number]} new coordinates
+     * @returns {Number[]}
      */
     update() {
         this.move();
@@ -45,7 +45,7 @@ export default class Dot {
                 this.hp = 0;
         }
 
-        return [this.x, this.y]
+        return [this.x, this.y];
     }
 
     _distanceTo(otherDot) {

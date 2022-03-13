@@ -14,8 +14,8 @@
         import CanvasController from './index.js';
 
         const rules = {
-            
-    dotPopulation: 100,
+            dotPopulation: 100,
+            lineMaxLenght: 50,
         }
 
         const canvas = new CanvasController(document.getElementById('myCanvas'), rules);
@@ -28,7 +28,7 @@
                 canvas.rePopulate(rules.dotPopulation - population);
             }
         }, 30)
-
+        canvas.canvas.element.onclick = function(){canvas.print()}
 
 
     </script>

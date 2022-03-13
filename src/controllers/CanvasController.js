@@ -44,6 +44,15 @@ export default class CanvasController {
         this.init();
     }
 
+    print() {
+        var image = this.canvas.element.toDataURL("image/png", 1.0);
+
+        const link = document.createElement('a');
+        link.href = image;
+        link.target = '_blank';
+        link.click();
+    }
+
     static defaultRules() {
         return {
             screenMargin: 5,
@@ -73,6 +82,10 @@ export default class CanvasController {
         for (const rule in newRules) {
             this._rules[rule] = newRules[rule];
         }
+    }
+
+    get rules() {
+        return Object(this._rules);
     }
 
     /**
